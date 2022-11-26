@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">ProjectG104</string>
+
+    // Strings MainActivity
+    <string name="btn_init">HOME</string>
+
+    // Strings MainActivity2
+    <string name="btn_info_product1">INFO</string>
+    <string name="btn_info_product2">INFO</string>
+    <string name="btn_info_product3">INFO</string>
+    <string name="text_product1">Producto 1</string>
+    <string name="text_product2">Producto 2</string>
+    <string name="text_product3">Producto 3</string>
+    <string name="text_title_home">HOME</string>
+
+    // Strings MainActivity3
+    <string name="btn_info_product">VOLVER</string>
+</resources>
