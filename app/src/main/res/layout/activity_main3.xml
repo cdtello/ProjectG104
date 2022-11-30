@@ -13,7 +13,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/textProductTitle"
+            android:id="@+id/textProductName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="60dp"
@@ -32,6 +32,12 @@
 
             <TextView
                 android:id="@+id/textProductDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="25dp"
+                android:text="" />
+            <TextView
+                android:id="@+id/textProductPrice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="25dp"
