@@ -1,23 +1,23 @@
 package com.example.projectg104.Entities;
 
 public class Product {
-    private int image;
+    private byte[] image;
     private String name;
     private String description;
     private int price;
 
-    public Product(int image, String name, String description, int price) {
+    public Product(byte[] image, String name, String description, int price) {
         this.image = image;
         this.name = name;
         this.description = description;
         this.price = price;
     }
 
-    public int getImage() {
+    public byte[] getImage() {
         return image;
     }
 
-    public void setImage(int image) {
+    public void setImage(byte[] image) {
         this.image = image;
     }
 

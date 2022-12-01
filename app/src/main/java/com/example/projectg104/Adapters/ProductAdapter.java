@@ -2,6 +2,8 @@ package com.example.projectg104.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,7 +53,10 @@ public class ProductAdapter extends BaseAdapter {
 
         Product product = arrayProducts.get(i);
 
-        imgProduct.setImageResource(product.getImage());
+        //byte[] image = product.getImage();
+        //Bitmap bitmap  = BitmapFactory.decodeByteArray(image, 8, image.length );
+        //imgProduct.setImageBitmap(bitmap);
+
         textNameProduct.setText(product.getName());
         textDescriptionProduct.setText(product.getDescription());
         int Col = product.getPrice() * 5000;
