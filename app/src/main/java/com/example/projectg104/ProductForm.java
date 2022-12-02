@@ -15,19 +15,22 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.example.projectg104.DB.DBHelper;
+import com.example.projectg104.Entities.Product;
 import com.example.projectg104.Services.ProductService;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 
 public class ProductForm extends AppCompatActivity {
     private ProductService productService;
     private DBHelper dbHelper;
-    private Button btnFormProduct;
-    private EditText editNameFormProduct, editDescriptionFormProduct, editPriceFormProduct;
+    private Button btnFormProduct,btnGet, btnDelete, btnUpdate;
+    private EditText editNameFormProduct, editDescriptionFormProduct, editPriceFormProduct, editIdFormProduct;
     private ImageView imgFormProduct;
     ActivityResultLauncher<String> content;
 
@@ -37,8 +40,12 @@ public class ProductForm extends AppCompatActivity {
         setContentView(R.layout.activity_product_form);
 
         btnFormProduct = (Button) findViewById(R.id.btnFormProduct);
+        btnGet = (Button) findViewById(R.id.btnGet);
+        btnDelete = (Button) findViewById(R.id.btnDelete);
+        btnUpdate = (Button) findViewById(R.id.btnUpdate);
         editNameFormProduct = (EditText) findViewById(R.id.editNameFormProduct);
         editDescriptionFormProduct = (EditText) findViewById(R.id.editDescriptionFormProduct);
+        editIdFormProduct = (EditText) findViewById(R.id.editIdFormProduct);
         editPriceFormProduct = (EditText) findViewById(R.id.editPriceFormProduct);
         imgFormProduct = (ImageView) findViewById(R.id.imgFormProduct);
 
@@ -93,5 +100,65 @@ public class ProductForm extends AppCompatActivity {
             }
         });
 
+        btnGet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String id = editIdFormProduct.getText().toString().trim();
+                if(id.compareTo("") != 0){
+                    ArrayList<Product> list = productService.cursorToArray(dbHelper.getDataById(id));
+                    if(list.size() != 0){
+                        Product product = list.get(0);
+                        imgFormProduct.setImageBitmap(productService.byteToBitmap(product.getImage()));
+                        editNameFormProduct.setText(product.getName());
+                        editDescriptionFormProduct.setText(product.getDescription());
+                        editPriceFormProduct.setText(String.valueOf(product.getPrice()));
+                    }else{
+                        Toast.makeText(getApplicationContext(),"No existe",Toast.LENGTH_SHORT).show();
+                    }
+                }else{
+                    Toast.makeText(getApplicationContext(),"Ingrese id",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        btnDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String id = editIdFormProduct.getText().toString().trim();
+                if(id.compareTo("") != 0){
+                    Log.d("DB",id);
+                    dbHelper.deleteDataById(id);
+                    clean();
+
+                }else{
+                    Toast.makeText(getApplicationContext(),"Ingrese id a eliminar",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        btnUpdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String id = editIdFormProduct.getText().toString().trim();
+                if(id.compareTo("") != 0){
+                    dbHelper.updateDataById(
+                            id,
+                            editNameFormProduct.getText().toString(),
+                            editDescriptionFormProduct.getText().toString(),
+                            editPriceFormProduct.getText().toString(),
+                            productService.imageViewToByte(imgFormProduct)
+                    );
+                    clean();
+                }
+
+            }
+        });
+    }
+
+    public void clean(){
+        editNameFormProduct.setText("");
+        editDescriptionFormProduct.setText("");
+        editPriceFormProduct.setText("");
+        imgFormProduct.setImageResource(R.drawable.empty);
     }
 }

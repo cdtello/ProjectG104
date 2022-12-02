@@ -9,7 +9,16 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.projectg104.DB.DBHelper;
+import com.example.projectg104.Entities.Product;
+import com.example.projectg104.Services.ProductService;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
 public class MainActivity3 extends AppCompatActivity {
+    private DBHelper dbHelper;
+    private ProductService productService;
     private Button btnProductInfo;
     private TextView textProductName, textProductDescription, textProductPrice;
     private ImageView imgProduct;
@@ -24,13 +33,18 @@ public class MainActivity3 extends AppCompatActivity {
         textProductPrice = (TextView) findViewById(R.id.textProductPrice);
         textProductDescription = (TextView) findViewById(R.id.textProductDescription);
         imgProduct = (ImageView) findViewById(R.id.imgProduct);
+        dbHelper = new DBHelper(this);
+        productService = new ProductService();
 
         Intent intentIn = getIntent();
-        textProductName.setText(intentIn.getStringExtra("name"));
-        textProductDescription.setText(intentIn.getStringExtra("description"));
-        textProductPrice.setText(intentIn.getStringExtra("price"));
-        int codeImage = intentIn.getIntExtra("image",0);
-        imgProduct.setImageResource(codeImage);
+        String id = intentIn.getStringExtra("id");
+        ArrayList<Product> list = productService.cursorToArray(dbHelper.getDataById(id));
+        Product product = list.get(0);
+
+        textProductName.setText(product.getName());
+        textProductDescription.setText(product.getDescription());
+        textProductPrice.setText(String.valueOf(product.getPrice()));
+        imgProduct.setImageBitmap(productService.byteToBitmap(product.getImage()));
 
         btnProductInfo.setOnClickListener(new View.OnClickListener() {
             @Override

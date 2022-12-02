@@ -53,9 +53,9 @@ public class ProductAdapter extends BaseAdapter {
 
         Product product = arrayProducts.get(i);
 
-        //byte[] image = product.getImage();
-        //Bitmap bitmap  = BitmapFactory.decodeByteArray(image, 8, image.length );
-        //imgProduct.setImageBitmap(bitmap);
+        byte[] image = product.getImage();
+        Bitmap bitmap  = BitmapFactory.decodeByteArray(image, 0, image.length );
+        imgProduct.setImageBitmap(bitmap);
 
         textNameProduct.setText(product.getName());
         textDescriptionProduct.setText(product.getDescription());
@@ -67,10 +67,7 @@ public class ProductAdapter extends BaseAdapter {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context.getApplicationContext(), MainActivity3.class);
-                intent.putExtra("name", product.getName());
-                intent.putExtra("description", product.getDescription());
-                intent.putExtra("price", prices);
-                intent.putExtra("image", product.getImage());
+                intent.putExtra("id", String.valueOf(product.getId()));
                 context.startActivity(intent);
             }
         });

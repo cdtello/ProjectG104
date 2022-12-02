@@ -1,5 +1,6 @@
 package com.example.projectg104.DB;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -43,6 +44,24 @@ public class DBHelper extends SQLiteOpenHelper {
     public Cursor getData(){
         Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM PRODUCTS", null);
         return cursor;
+    }
+
+    public Cursor getDataById(String id){
+        Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM PRODUCTS WHERE id = "+id, null);
+        return cursor;
+    }
+
+    public void deleteDataById(String id){
+       sqLiteDatabase.execSQL("DELETE FROM PRODUCTS WHERE id = " + id);
+    }
+
+    public void updateDataById(String id, String name, String description, String price, byte[] image){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("name", name);
+        contentValues.put("description", description);
+        contentValues.put("price", price);
+        contentValues.put("image", image);
+        sqLiteDatabase.update("PRODUCTS",contentValues,"id = ?",new String[]{id});
     }
 
 }
