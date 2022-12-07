@@ -53,9 +53,9 @@ public class ProductAdapter extends BaseAdapter {
 
         Product product = arrayProducts.get(i);
 
-        byte[] image = product.getImage();
-        Bitmap bitmap  = BitmapFactory.decodeByteArray(image, 0, image.length );
-        imgProduct.setImageBitmap(bitmap);
+        //byte[] image = product.getImage();
+        //Bitmap bitmap  = BitmapFactory.decodeByteArray(image, 0, image.length );
+        //imgProduct.setImageBitmap(bitmap);
 
         textNameProduct.setText(product.getName());
         textDescriptionProduct.setText(product.getDescription());

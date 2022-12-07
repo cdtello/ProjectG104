@@ -13,6 +13,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.projectg104.Adapters.ProductAdapter;
+import com.example.projectg104.DB.DBFirebase;
 import com.example.projectg104.DB.DBHelper;
 import com.example.projectg104.Entities.Product;
 import com.example.projectg104.Services.ProductService;
@@ -22,6 +23,7 @@ import java.util.ArrayList;
 
 public class MainActivity2 extends AppCompatActivity {
     private DBHelper dbHelper;
+    private DBFirebase dbFirebase;
     private ProductService productService;
     private ListView listViewProducts;
     private ProductAdapter productAdapter;
@@ -34,6 +36,7 @@ public class MainActivity2 extends AppCompatActivity {
         arrayProducts = new ArrayList<>();
         try {
             dbHelper = new DBHelper(this);
+            dbFirebase = new DBFirebase();
             productService = new ProductService();
             Cursor cursor = dbHelper.getData();
             arrayProducts = productService.cursorToArray(cursor);
@@ -45,6 +48,8 @@ public class MainActivity2 extends AppCompatActivity {
 
         productAdapter = new ProductAdapter(this, arrayProducts);
         listViewProducts.setAdapter(productAdapter);
+
+        dbFirebase.getData(productAdapter, arrayProducts);
     }
 
     @Override

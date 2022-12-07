@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.projectg104.DB.DBFirebase;
 import com.example.projectg104.DB.DBHelper;
 import com.example.projectg104.Entities.Product;
 import com.example.projectg104.Services.ProductService;
@@ -29,6 +30,7 @@ import java.util.ArrayList;
 public class ProductForm extends AppCompatActivity {
     private ProductService productService;
     private DBHelper dbHelper;
+    private DBFirebase dbFirebase;
     private Button btnFormProduct,btnGet, btnDelete, btnUpdate;
     private EditText editNameFormProduct, editDescriptionFormProduct, editPriceFormProduct, editIdFormProduct;
     private ImageView imgFormProduct;
@@ -53,6 +55,7 @@ public class ProductForm extends AppCompatActivity {
         try {
             productService = new ProductService();
             dbHelper = new DBHelper(this);
+            dbFirebase = new DBFirebase();
         }catch (Exception e){
             Log.e("DB", e.toString());
         }
@@ -85,12 +88,16 @@ public class ProductForm extends AppCompatActivity {
             public void onClick(View view) {
 
                 try {
-                    dbHelper.insertData(
+                    Product product = new Product(
                             editNameFormProduct.getText().toString(),
                             editDescriptionFormProduct.getText().toString(),
-                            editPriceFormProduct.getText().toString(),
-                            productService.imageViewToByte(imgFormProduct)
-                    );
+                            Integer.parseInt(editPriceFormProduct.getText().toString()),
+                            productService.imageViewToByte(imgFormProduct));
+
+                    //dbHelper.insertData(product);
+                    dbFirebase.insertData(product);
+
+
                 }catch (Exception e){
                     Log.e("DB Insert", e.toString());
                 }
@@ -106,9 +113,11 @@ public class ProductForm extends AppCompatActivity {
                 String id = editIdFormProduct.getText().toString().trim();
                 if(id.compareTo("") != 0){
                     ArrayList<Product> list = productService.cursorToArray(dbHelper.getDataById(id));
+                    list.add(dbFirebase.getDataById(id));
+
                     if(list.size() != 0){
                         Product product = list.get(0);
-                        imgFormProduct.setImageBitmap(productService.byteToBitmap(product.getImage()));
+                        //imgFormProduct.setImageBitmap(productService.byteToBitmap(product.getImage()));
                         editNameFormProduct.setText(product.getName());
                         editDescriptionFormProduct.setText(product.getDescription());
                         editPriceFormProduct.setText(String.valueOf(product.getPrice()));

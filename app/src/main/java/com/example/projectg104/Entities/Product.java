@@ -1,20 +1,38 @@
 package com.example.projectg104.Entities;
 
+import java.util.UUID;
+
 public class Product {
-    private int id;
+    private String id;
     private byte[] image;
     private String name;
     private String description;
     private int price;
 
-    public Product(int id, byte[] image, String name, String description, int price) {
+    public Product(String id, String name, String description, int price, byte[] image) {
         this.id = id;
         this.image = image;
         this.name = name;
         this.description = description;
         this.price = price;
     }
-    public int getId(){return id;}
+
+    public Product(String name, String description, int price, byte[] image) {
+        this.id = UUID.randomUUID().toString();
+        this.image = image;
+        this.name = name;
+        this.description = description;
+        this.price = price;
+    }
+
+    public Product(String name, String description, int price) {
+        this.id = UUID.randomUUID().toString();
+        this.name = name;
+        this.description = description;
+        this.price = price;
+    }
+
+    public String getId(){return id;}
 
     public byte[] getImage() {
         return image;

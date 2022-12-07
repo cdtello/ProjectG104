@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
 
+import com.example.projectg104.Entities.Product;
+
 public class DBHelper extends SQLiteOpenHelper {
     private SQLiteDatabase sqLiteDatabase;
 
@@ -18,7 +20,7 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL( "CREATE TABLE PRODUCTS("+
-                    "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    "id VARCHAR PRIMARY KEY," +
                     "name VARCHAR," +
                     "description VARCHAR," +
                     "price VARCHAR," +
@@ -31,13 +33,14 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     //METODOS CRUD
-    public void insertData(String name, String description, String price, byte[] image){
-        String sql = "INSERT INTO PRODUCTS VALUES(null, ?, ?, ?, ?)";
+    public void insertData(Product product){
+        String sql = "INSERT INTO PRODUCTS VALUES(?, ?, ?, ?, ?)";
         SQLiteStatement statement = sqLiteDatabase.compileStatement(sql);
-        statement.bindString(1, name);
-        statement.bindString(2, description);
-        statement.bindString(3, price);
-        statement.bindBlob(4, image);
+        statement.bindString(0, product.getId());
+        statement.bindString(1, product.getName());
+        statement.bindString(2, product.getDescription());
+        statement.bindString(3, String.valueOf(product.getPrice()));
+        statement.bindBlob(4, product.getImage());
         statement.executeInsert();
     }
 
