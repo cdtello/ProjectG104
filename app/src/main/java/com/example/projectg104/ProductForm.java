@@ -92,7 +92,9 @@ public class ProductForm extends AppCompatActivity {
                             editNameFormProduct.getText().toString(),
                             editDescriptionFormProduct.getText().toString(),
                             Integer.parseInt(editPriceFormProduct.getText().toString()),
-                            productService.imageViewToByte(imgFormProduct));
+                            ""
+                            //productService.imageViewToByte(imgFormProduct)
+                    );
 
                     //dbHelper.insertData(product);
                     dbFirebase.insertData(product);
@@ -104,29 +106,6 @@ public class ProductForm extends AppCompatActivity {
 
                 Intent intent = new Intent(getApplicationContext(), MainActivity2.class);
                 startActivity(intent);
-            }
-        });
-
-        btnGet.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String id = editIdFormProduct.getText().toString().trim();
-                if(id.compareTo("") != 0){
-                    ArrayList<Product> list = productService.cursorToArray(dbHelper.getDataById(id));
-                    list.add(dbFirebase.getDataById(id));
-
-                    if(list.size() != 0){
-                        Product product = list.get(0);
-                        //imgFormProduct.setImageBitmap(productService.byteToBitmap(product.getImage()));
-                        editNameFormProduct.setText(product.getName());
-                        editDescriptionFormProduct.setText(product.getDescription());
-                        editPriceFormProduct.setText(String.valueOf(product.getPrice()));
-                    }else{
-                        Toast.makeText(getApplicationContext(),"No existe",Toast.LENGTH_SHORT).show();
-                    }
-                }else{
-                    Toast.makeText(getApplicationContext(),"Ingrese id",Toast.LENGTH_SHORT).show();
-                }
             }
         });
 

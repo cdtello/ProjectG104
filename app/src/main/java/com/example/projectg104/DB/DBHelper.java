@@ -8,23 +8,29 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
 
 import com.example.projectg104.Entities.Product;
+import com.example.projectg104.Services.ProductService;
 
 public class DBHelper extends SQLiteOpenHelper {
     private SQLiteDatabase sqLiteDatabase;
+    private ProductService productService;
 
     public DBHelper(Context context){
         super(context, "G104.db", null, 1);
         sqLiteDatabase = this.getWritableDatabase();
+        productService = new ProductService();
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL( "CREATE TABLE PRODUCTS("+
-                    "id VARCHAR PRIMARY KEY," +
+                    "id TEXT PRIMARY KEY," +
                     "name VARCHAR," +
-                    "description VARCHAR," +
+                    "description TEXT," +
                     "price VARCHAR," +
-                    "image BLOB" +
+                    "image TEXT," +
+                    "deleted TEXT," +
+                    "createdAt TEXT,"+
+                    "updatedAt TEXT"+
                     ")");
     }
     @Override
@@ -34,13 +40,16 @@ public class DBHelper extends SQLiteOpenHelper {
 
     //METODOS CRUD
     public void insertData(Product product){
-        String sql = "INSERT INTO PRODUCTS VALUES(?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO PRODUCTS VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
         SQLiteStatement statement = sqLiteDatabase.compileStatement(sql);
-        statement.bindString(0, product.getId());
-        statement.bindString(1, product.getName());
-        statement.bindString(2, product.getDescription());
-        statement.bindString(3, String.valueOf(product.getPrice()));
-        statement.bindBlob(4, product.getImage());
+        statement.bindString(1, product.getId());
+        statement.bindString(2, product.getName());
+        statement.bindString(3, product.getDescription());
+        statement.bindString(4, String.valueOf(product.getPrice()));
+        statement.bindString(5, product.getImage());
+        statement.bindString(6, String.valueOf(product.isDeleted()));
+        statement.bindString(7, productService.dateToString(product.getCreatedAt()));
+        statement.bindString(8, productService.dateToString(product.getUpdatedAt()));
         statement.executeInsert();
     }
 

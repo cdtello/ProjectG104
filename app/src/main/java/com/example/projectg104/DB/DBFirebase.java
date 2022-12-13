@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 
 import com.example.projectg104.Adapters.ProductAdapter;
 import com.example.projectg104.Entities.Product;
+import com.example.projectg104.Services.ProductService;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -18,15 +19,19 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class DBFirebase {
     private FirebaseFirestore db;
+    private ProductService productService;
 
     public DBFirebase(){
         this.db = FirebaseFirestore.getInstance();
+        this.productService = new ProductService();
     }
 
     public void insertData(Product prod){
@@ -36,6 +41,10 @@ public class DBFirebase {
         product.put("name", prod.getName());
         product.put("description", prod.getDescription());
         product.put("price", prod.getPrice());
+        product.put("image", prod.getImage());
+        product.put("deleted", prod.isDeleted());
+        product.put("createdAt", prod.getCreatedAt());
+        product.put("updatedAt", prod.getUpdatedAt());
 
         // Add a new document with a generated ID
         db.collection("products")
@@ -64,12 +73,20 @@ public class DBFirebase {
                     if (task.isSuccessful()) {
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             Log.d(TAG, document.getId() + " => " + document.getData());
-                            Product product = new Product(
-                                    document.getData().get("name").toString(),
-                                    document.getData().get("description").toString(),
-                                    Integer.parseInt(document.getData().get("price").toString())
-                            );
-                            list.add(product);
+                            Product product = null;
+                            if(!Boolean.valueOf(document.getData().get("deleted").toString())){
+                                product = new Product(
+                                        document.getData().get("id").toString(),
+                                        document.getData().get("name").toString(),
+                                        document.getData().get("description").toString(),
+                                        Integer.parseInt(document.getData().get("price").toString()),
+                                        document.getData().get("image").toString(),
+                                        Boolean.valueOf(document.getData().get("deleted").toString()),
+                                        productService.stringToDate(document.getData().get("createdAt").toString()),
+                                        productService.stringToDate(document.getData().get("updatedAt").toString())
+                                );
+                                list.add(product);
+                            }
                         }
                         productAdapter.notifyDataSetChanged();
                     } else {
@@ -79,10 +96,8 @@ public class DBFirebase {
             });
     }
 
-    public Product getDataById(String id){
-        final Product[] product = {null};
+    public void syncData(DBHelper dbHelper){
         db.collection("products")
-                //.whereEqualTo("id", id)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -90,14 +105,19 @@ public class DBFirebase {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Log.d(TAG, document.getId() + " => " + document.getData());
-                                if(document.getData().get("id").toString().compareTo(id) == 0){
-                                    product[0] = new Product(
-
+                                Product product = null;
+                                if(!Boolean.valueOf(document.getData().get("deleted").toString())){
+                                    product = new Product(
+                                            document.getData().get("id").toString(),
                                             document.getData().get("name").toString(),
                                             document.getData().get("description").toString(),
-                                            Integer.parseInt(document.getData().get("price").toString())
+                                            Integer.parseInt(document.getData().get("price").toString()),
+                                            document.getData().get("image").toString(),
+                                            Boolean.valueOf(document.getData().get("deleted").toString()),
+                                            productService.stringToDate(document.getData().get("createdAt").toString()),
+                                            productService.stringToDate(document.getData().get("updatedAt").toString())
                                     );
-                                    ;
+                                    dbHelper.insertData(product);
                                 }
                             }
                         } else {
@@ -105,7 +125,6 @@ public class DBFirebase {
                         }
                     }
                 });
-        return product[0];
     }
 
     public void updateDataById(String id, String name, String description, String price, byte[] image){

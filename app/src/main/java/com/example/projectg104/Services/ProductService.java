@@ -5,13 +5,17 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.example.projectg104.Entities.Product;
 import com.example.projectg104.R;
 
 import java.io.ByteArrayOutputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class ProductService {
     public ArrayList<Product> cursorToArray(Cursor cursor){
@@ -25,7 +29,10 @@ public class ProductService {
                         cursor.getString(1),
                         cursor.getString(2),
                         Integer.parseInt(cursor.getString(3)),
-                        cursor.getBlob(4)
+                        cursor.getString(4),
+                        Boolean.valueOf(cursor.getString(5)),
+                        stringToDate(cursor.getString(6)),
+                        stringToDate(cursor.getString(7))
                 );
                 list.add(product);
             }
@@ -44,5 +51,21 @@ public class ProductService {
     public Bitmap byteToBitmap(byte[] image){
         Bitmap bitmap  = BitmapFactory.decodeByteArray(image, 0, image.length );
         return bitmap;
+    }
+
+    public Date stringToDate (String date){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            return dateFormat.parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public String dateToString (Date date){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Log.d("ErrorDate", dateFormat.format(date));
+        return dateFormat.format(date);
     }
 }

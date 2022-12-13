@@ -35,11 +35,14 @@ public class MainActivity2 extends AppCompatActivity {
         setContentView(R.layout.activity_main2);
         arrayProducts = new ArrayList<>();
         try {
-            dbHelper = new DBHelper(this);
+            //dbHelper = new DBHelper(this);
             dbFirebase = new DBFirebase();
             productService = new ProductService();
             Cursor cursor = dbHelper.getData();
             arrayProducts = productService.cursorToArray(cursor);
+            //if(arrayProducts.size() == 0){
+               // dbFirebase.syncData(dbHelper);
+            //}
         }catch (Exception e){
             Log.e("Database", e.toString());
         }

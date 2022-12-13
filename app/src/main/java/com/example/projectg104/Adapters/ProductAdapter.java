@@ -68,6 +68,10 @@ public class ProductAdapter extends BaseAdapter {
             public void onClick(View view) {
                 Intent intent = new Intent(context.getApplicationContext(), MainActivity3.class);
                 intent.putExtra("id", String.valueOf(product.getId()));
+                intent.putExtra("name", String.valueOf(product.getName()));
+                intent.putExtra("description", String.valueOf(product.getDescription()));
+                intent.putExtra("price", String.valueOf(product.getPrice()));
+                intent.putExtra("image", String.valueOf(product.getImage()));
                 context.startActivity(intent);
             }
         });
