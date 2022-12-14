@@ -15,4 +15,5 @@
 
     // Strings MainActivity3
     <string name="btn_info_product">VOLVER</string>
+    <string name="title_activity_maps_google">MapsGoogle</string>
 </resources>
