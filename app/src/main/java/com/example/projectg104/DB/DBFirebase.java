@@ -99,67 +99,38 @@ public class DBFirebase {
                 }
             });
     }
-/*
-    public void syncData(DBHelper dbHelper){
-        db.collection("products")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+
+    public void deleteData(String id){
+        db.collection("products").whereEqualTo("id",id)
+                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d(TAG, document.getId() + " => " + document.getData());
-                                Product product = null;
-                                if(!Boolean.valueOf(document.getData().get("deleted").toString())){
-                                    product = new Product(
-                                            document.getData().get("id").toString(),
-                                            document.getData().get("name").toString(),
-                                            document.getData().get("description").toString(),
-                                            Integer.parseInt(document.getData().get("price").toString()),
-                                            document.getData().get("image").toString(),
-                                            Boolean.valueOf(document.getData().get("deleted").toString()),
-                                            productService.stringToDate(document.getData().get("createdAt").toString()),
-                                            productService.stringToDate(document.getData().get("updatedAt").toString())
-                                    );
-                                    dbHelper.insertData(product);
-                                }
+                        if(task.isSuccessful()){
+                            for(QueryDocumentSnapshot documentSnapshot : task.getResult()){
+                                documentSnapshot.getReference().delete();
                             }
-                        } else {
-                            Log.w(TAG, "Error getting documents.", task.getException());
                         }
                     }
                 });
     }
-*/
-    public void updateDataById(String id, String name, String description, String price, byte[] image){
-        db.collection("products")
-            .document(id)
-            .update(
-                    "name",name,
-                    "description",description,
-                    "price", price)
-            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                   //
-                }
-            })
-            .addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    //
-                }
-            });
-    }
 
-    public void deleteDataById(String id){
-        db.collection("products")
-                .document(id)
-                .delete()
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
+    public void updateData(Product producto){
+        db.collection("products").whereEqualTo("id", producto.getId())
+                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        //
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()){
+                            for(QueryDocumentSnapshot documentSnapshot : task.getResult()){
+                                documentSnapshot.getReference().update(
+                                        "name", producto.getName(),
+                                        "description", producto.getDescription(),
+                                        "price", producto.getPrice(),
+                                        "image", producto.getImage(),
+                                        "latitud", producto.getLatitud(),
+                                        "longitud", producto.getLongitud()
+                                );
+                            }
+                        }
                     }
                 });
     }

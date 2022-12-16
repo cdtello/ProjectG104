@@ -36,10 +36,6 @@
             android:value="AIzaSyD6p1NOEAPMpHosHxFef7EKCcyOTMCHcJA" />
 
         <activity
-            android:name=".MapsGoogle"
-            android:exported="false"
-            android:label="@string/title_activity_maps_google" />
-        <activity
             android:name=".Maps"
             android:exported="false">
             <meta-data

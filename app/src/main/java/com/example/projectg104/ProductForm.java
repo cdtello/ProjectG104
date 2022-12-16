@@ -41,7 +41,7 @@ public class ProductForm extends AppCompatActivity {
     private ProductService productService;
     private DBHelper dbHelper;
     private DBFirebase dbFirebase;
-    private Button btnFormProduct,btnGet, btnDelete, btnUpdate;
+    private Button btnFormProduct;
     private EditText editNameFormProduct, editDescriptionFormProduct, editPriceFormProduct, editIdFormProduct;
     private ImageView imgFormProduct;
     private TextView textLatitudFormProduct, textLongitudFormProduct;
@@ -56,16 +56,17 @@ public class ProductForm extends AppCompatActivity {
         Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this));
 
         btnFormProduct = (Button) findViewById(R.id.btnFormProduct);
-        btnGet = (Button) findViewById(R.id.btnGet);
-        btnDelete = (Button) findViewById(R.id.btnDelete);
-        btnUpdate = (Button) findViewById(R.id.btnUpdate);
         editNameFormProduct = (EditText) findViewById(R.id.editNameFormProduct);
         editDescriptionFormProduct = (EditText) findViewById(R.id.editDescriptionFormProduct);
-        editIdFormProduct = (EditText) findViewById(R.id.editIdFormProduct);
         editPriceFormProduct = (EditText) findViewById(R.id.editPriceFormProduct);
         imgFormProduct = (ImageView) findViewById(R.id.imgFormProduct);
         textLatitudFormProduct = (TextView) findViewById(R.id.textLatitudFormProduct);
         textLongitudFormProduct = (TextView) findViewById(R.id.textLongitudFormProduct);
+
+        Intent intentIN = getIntent();
+        Boolean edit = intentIN.getBooleanExtra("edit", false);
+
+
 
         map = (MapView) findViewById(R.id.mapForm);
         map.setTileSource(TileSourceFactory.MAPNIK);
@@ -79,6 +80,19 @@ public class ProductForm extends AppCompatActivity {
         mapController.setCenter(colombia);
         mapController.setZoom(12);
         map.setMultiTouchControls(true);
+
+        if(edit){
+            btnFormProduct.setText("Actualizar");
+            editNameFormProduct.setText(intentIN.getStringExtra("name"));
+            editDescriptionFormProduct.setText(intentIN.getStringExtra("description"));
+            editPriceFormProduct.setText(String.valueOf(intentIN.getIntExtra("price", 0)));
+            textLatitudFormProduct.setText(String.valueOf(intentIN.getDoubleExtra("latitud", 0.0)));
+            textLongitudFormProduct.setText(String.valueOf(intentIN.getDoubleExtra("longitud", 0.0)));
+            GeoPoint geoPoint = new GeoPoint(intentIN.getDoubleExtra("latitud", 0.0), intentIN.getDoubleExtra("longitud", 0.0));
+            Marker marker = new Marker(map);
+            marker.setPosition(geoPoint);
+            map.getOverlays().add(marker);
+        }
 
         MapEventsReceiver mapEventsReceiver = new MapEventsReceiver() {
             @Override
@@ -143,8 +157,14 @@ public class ProductForm extends AppCompatActivity {
                             Double.parseDouble(textLongitudFormProduct.getText().toString().trim())
                     );
 
-                    //dbHelper.insertData(product);
-                    dbFirebase.insertData(product);
+
+                    if(edit){
+                        product.setId(intentIN.getStringExtra("id"));
+                        dbFirebase.updateData(product);
+                    }else{
+                        //dbHelper.insertData(product);
+                        dbFirebase.insertData(product);
+                    }
 
 
                 }catch (Exception e){
@@ -153,39 +173,6 @@ public class ProductForm extends AppCompatActivity {
 
                 Intent intent = new Intent(getApplicationContext(), MainActivity2.class);
                 startActivity(intent);
-            }
-        });
-
-        btnDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String id = editIdFormProduct.getText().toString().trim();
-                if(id.compareTo("") != 0){
-                    Log.d("DB",id);
-                    dbHelper.deleteDataById(id);
-                    clean();
-
-                }else{
-                    Toast.makeText(getApplicationContext(),"Ingrese id a eliminar",Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-        btnUpdate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String id = editIdFormProduct.getText().toString().trim();
-                if(id.compareTo("") != 0){
-                    dbHelper.updateDataById(
-                            id,
-                            editNameFormProduct.getText().toString(),
-                            editDescriptionFormProduct.getText().toString(),
-                            editPriceFormProduct.getText().toString(),
-                            productService.imageViewToByte(imgFormProduct)
-                    );
-                    clean();
-                }
-
             }
         });
     }

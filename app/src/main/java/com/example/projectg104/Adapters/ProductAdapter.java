@@ -1,6 +1,7 @@
 package com.example.projectg104.Adapters;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -8,11 +9,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.app.AlertDialog;
 
+import com.example.projectg104.DB.DBFirebase;
 import com.example.projectg104.Entities.Product;
+import com.example.projectg104.MainActivity;
+import com.example.projectg104.MainActivity2;
 import com.example.projectg104.MainActivity3;
+import com.example.projectg104.ProductForm;
 import com.example.projectg104.R;
 
 import java.util.ArrayList;
@@ -50,6 +57,8 @@ public class ProductAdapter extends BaseAdapter {
         TextView textNameProduct = (TextView) view.findViewById(R.id.textNameProduct);
         TextView textDescriptionProduct = (TextView) view.findViewById(R.id.textDescriptionProduct);
         TextView textPriceProduct = (TextView) view.findViewById(R.id.textPriceProduct);
+        Button btnEditTemplate = (Button) view.findViewById(R.id.btnEditTemplate);
+        Button btnDeleteTemplate = (Button) view.findViewById(R.id.btnDeleteTemplate);
 
         Product product = arrayProducts.get(i);
 
@@ -61,7 +70,7 @@ public class ProductAdapter extends BaseAdapter {
         textDescriptionProduct.setText(product.getDescription());
         int Col = product.getPrice() * 5000;
         int Usd = product.getPrice();
-        String prices = "Pesos: "+Col+" - "+ "USD: "+Usd;
+        String prices = "USD: "+Usd;
         textPriceProduct.setText(prices);
         imgProduct.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,6 +83,50 @@ public class ProductAdapter extends BaseAdapter {
                 intent.putExtra("image", String.valueOf(product.getImage()));
                 context.startActivity(intent);
             }
+        });
+
+        btnEditTemplate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context.getApplicationContext(), ProductForm.class);
+                intent.putExtra("edit", true);
+                intent.putExtra("id", product.getId());
+                intent.putExtra("name", product.getName());
+                intent.putExtra("description", product.getDescription());
+                intent.putExtra("price", product.getPrice());
+                intent.putExtra("image", product.getImage());
+                intent.putExtra("latitud", product.getLatitud());
+                intent.putExtra("longitud", product.getLongitud());
+
+                context.startActivity(intent);
+            }
+        });
+
+        btnDeleteTemplate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setMessage("¿Estas seguro que deseas eliminar el producto?")
+                        .setTitle("Confirmación")
+                        .setPositiveButton("SI", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                DBFirebase dbFirebase = new DBFirebase();
+                                dbFirebase.deleteData(product.getId());
+                                Intent intent = new Intent(context.getApplicationContext(), MainActivity2.class);
+                                context.startActivity(intent);
+                            }
+                        })
+                        .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                            }
+                        });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }
+
         });
 
         return view;
