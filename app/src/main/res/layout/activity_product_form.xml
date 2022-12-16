@@ -58,9 +58,14 @@
 
         <ImageView
             android:id="@+id/imgFormProduct"
-            android:layout_width="350dp"
-            android:layout_height="350dp"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
             app:srcCompat="@drawable/empty" />
+
+        <org.osmdroid.views.MapView
+            android:id="@+id/mapForm"
+            android:layout_width="350dp"
+            android:layout_height="350dp"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -118,10 +123,30 @@
                 android:inputType="textPersonName" />
         </LinearLayout>
 
-        <Button
-            android:id="@+id/btnFormProduct"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Insertar" />
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/btnFormProduct"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Insertar" />
+            <TextView
+                android:id="@+id/textLatitudFormProduct"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="latitud" />
+
+            <TextView
+                android:id="@+id/textLongitudFormProduct"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="longitud" />
+        </LinearLayout>
+
+
     </LinearLayout>
 </LinearLayout>

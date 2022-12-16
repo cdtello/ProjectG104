@@ -12,8 +12,12 @@ public class Product {
     private boolean deleted;
     private Date updatedAt;
     private Date createdAt;
+    private Double latitud;
+    private Double longitud;
 
-    public Product(String id, String name, String description, int price, String image) {
+    public Product(String id, String name, String description, int price, String image, Double latitud, Double longitud) {
+        this.latitud = latitud;
+        this.longitud = longitud;
         this.id = id;
         this.name = name;
         this.description = description;
@@ -24,7 +28,9 @@ public class Product {
         this.deleted = false;
     }
 
-    public Product(String name, String description, int price, String image) {
+    public Product(String name, String description, int price, String image, Double latitud, Double longitud) {
+        this.latitud = latitud;
+        this.longitud = longitud;
         this.id = UUID.randomUUID().toString();
         this.name = name;
         this.description = description;
@@ -35,7 +41,9 @@ public class Product {
         this.deleted = false;
     }
 
-    public Product(String id, String name, String description, int price, String image, Boolean deleted, Date createdAt, Date updatedAt) {
+    public Product(String id, String name, String description, int price, String image, Boolean deleted, Date createdAt, Date updatedAt, Double latitud, Double longitud) {
+        this.latitud = latitud;
+        this.longitud = longitud;
         this.id = id;
         this.name = name;
         this.description = description;
@@ -44,6 +52,22 @@ public class Product {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.deleted = deleted;
+    }
+
+    public Double getLatitud() {
+        return latitud;
+    }
+
+    public void setLatitud(Double latitud) {
+        this.latitud = latitud;
+    }
+
+    public Double getLongitud() {
+        return longitud;
+    }
+
+    public void setLongitud(Double longitud) {
+        this.longitud = longitud;
     }
 
     public void setId(String id) {

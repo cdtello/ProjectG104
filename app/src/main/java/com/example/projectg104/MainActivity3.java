@@ -42,7 +42,9 @@ public class MainActivity3 extends AppCompatActivity {
                 intentIn.getStringExtra("name"),
                 intentIn.getStringExtra("description"),
                 Integer.parseInt(intentIn.getStringExtra("price")),
-                intentIn.getStringExtra("image")
+                intentIn.getStringExtra("image"),
+                Double.parseDouble(intentIn.getStringExtra("latitud")),
+                Double.parseDouble(intentIn.getStringExtra("longitud"))
         );
         //ArrayList<Product> list = productService.cursorToArray(dbHelper.getDataById(id));
         //Product product = list.get(0);

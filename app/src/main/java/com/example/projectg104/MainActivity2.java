@@ -63,9 +63,23 @@ public class MainActivity2 extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        Intent intent;
         switch (item.getItemId()){
             case R.id.actionAdd:
-                Intent intent = new Intent(getApplicationContext(), ProductForm.class);
+                intent = new Intent(getApplicationContext(), ProductForm.class);
+                startActivity(intent);
+                return true;
+            case R.id.actioMap:
+                intent = new Intent(getApplicationContext(), Maps.class);
+                ArrayList<String> latitudes = new ArrayList<>();
+                ArrayList<String> longitudes = new ArrayList<>();
+
+                for(int i=0; i<arrayProducts.size(); i++){
+                    latitudes.add(String.valueOf(arrayProducts.get(i).getLatitud()));
+                    longitudes.add(String.valueOf(arrayProducts.get(i).getLongitud()));
+                }
+                intent.putStringArrayListExtra("latitudes", latitudes);
+                intent.putStringArrayListExtra("longitudes", longitudes);
                 startActivity(intent);
                 return true;
             default:

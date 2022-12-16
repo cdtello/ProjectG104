@@ -32,7 +32,9 @@ public class ProductService {
                         cursor.getString(4),
                         Boolean.valueOf(cursor.getString(5)),
                         stringToDate(cursor.getString(6)),
-                        stringToDate(cursor.getString(7))
+                        stringToDate(cursor.getString(7)),
+                        Double.parseDouble(cursor.getString(8)),
+                        Double.parseDouble(cursor.getString(9))
                 );
                 list.add(product);
             }

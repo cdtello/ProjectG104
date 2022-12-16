@@ -10,11 +10,13 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.projectg104.DB.DBFirebase;
@@ -22,10 +24,18 @@ import com.example.projectg104.DB.DBHelper;
 import com.example.projectg104.Entities.Product;
 import com.example.projectg104.Services.ProductService;
 
+import org.osmdroid.config.Configuration;
+import org.osmdroid.events.MapEventsReceiver;
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.MapController;
+import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.MapEventsOverlay;
+import org.osmdroid.views.overlay.Marker;
+
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 
 public class ProductForm extends AppCompatActivity {
     private ProductService productService;
@@ -34,12 +44,16 @@ public class ProductForm extends AppCompatActivity {
     private Button btnFormProduct,btnGet, btnDelete, btnUpdate;
     private EditText editNameFormProduct, editDescriptionFormProduct, editPriceFormProduct, editIdFormProduct;
     private ImageView imgFormProduct;
+    private TextView textLatitudFormProduct, textLongitudFormProduct;
+    private MapView map;
+    private MapController mapController;
     ActivityResultLauncher<String> content;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_form);
+        Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this));
 
         btnFormProduct = (Button) findViewById(R.id.btnFormProduct);
         btnGet = (Button) findViewById(R.id.btnGet);
@@ -50,6 +64,38 @@ public class ProductForm extends AppCompatActivity {
         editIdFormProduct = (EditText) findViewById(R.id.editIdFormProduct);
         editPriceFormProduct = (EditText) findViewById(R.id.editPriceFormProduct);
         imgFormProduct = (ImageView) findViewById(R.id.imgFormProduct);
+        textLatitudFormProduct = (TextView) findViewById(R.id.textLatitudFormProduct);
+        textLongitudFormProduct = (TextView) findViewById(R.id.textLongitudFormProduct);
+
+        map = (MapView) findViewById(R.id.mapForm);
+        map.setTileSource(TileSourceFactory.MAPNIK);
+
+        map.setBuiltInZoomControls(true);
+        mapController = (MapController) map.getController();
+
+        GeoPoint colombia = new GeoPoint(4.570868, -74.297333);
+
+
+        mapController.setCenter(colombia);
+        mapController.setZoom(12);
+        map.setMultiTouchControls(true);
+
+        MapEventsReceiver mapEventsReceiver = new MapEventsReceiver() {
+            @Override
+            public boolean singleTapConfirmedHelper(GeoPoint p) {
+                textLatitudFormProduct.setText(String.valueOf(p.getLatitude()));
+                textLongitudFormProduct.setText(String.valueOf(p.getLongitude()));
+                return false;
+            }
+
+            @Override
+            public boolean longPressHelper(GeoPoint p) {
+                return false;
+            }
+        };
+        MapEventsOverlay mapEventsOverlay = new MapEventsOverlay(this, mapEventsReceiver);
+        map.getOverlays().add(mapEventsOverlay);
+
 
         byte[] img = "".getBytes(StandardCharsets.UTF_8);
         try {
@@ -92,8 +138,9 @@ public class ProductForm extends AppCompatActivity {
                             editNameFormProduct.getText().toString(),
                             editDescriptionFormProduct.getText().toString(),
                             Integer.parseInt(editPriceFormProduct.getText().toString()),
-                            ""
-                            //productService.imageViewToByte(imgFormProduct)
+                            "",
+                            Double.parseDouble(textLatitudFormProduct.getText().toString().trim()),
+                            Double.parseDouble(textLongitudFormProduct.getText().toString().trim())
                     );
 
                     //dbHelper.insertData(product);

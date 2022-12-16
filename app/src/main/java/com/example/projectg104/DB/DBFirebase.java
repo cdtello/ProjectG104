@@ -45,6 +45,8 @@ public class DBFirebase {
         product.put("deleted", prod.isDeleted());
         product.put("createdAt", prod.getCreatedAt());
         product.put("updatedAt", prod.getUpdatedAt());
+        product.put("latitud", prod.getLatitud());
+        product.put("longitud", prod.getLongitud());
 
         // Add a new document with a generated ID
         db.collection("products")
@@ -83,7 +85,9 @@ public class DBFirebase {
                                         document.getData().get("image").toString(),
                                         Boolean.valueOf(document.getData().get("deleted").toString()),
                                         productService.stringToDate(document.getData().get("createdAt").toString()),
-                                        productService.stringToDate(document.getData().get("updatedAt").toString())
+                                        productService.stringToDate(document.getData().get("updatedAt").toString()),
+                                        Double.parseDouble(document.getData().get("latitud").toString()),
+                                        Double.parseDouble(document.getData().get("longitud").toString())
                                 );
                                 list.add(product);
                             }
@@ -95,7 +99,7 @@ public class DBFirebase {
                 }
             });
     }
-
+/*
     public void syncData(DBHelper dbHelper){
         db.collection("products")
                 .get()
@@ -126,7 +130,7 @@ public class DBFirebase {
                     }
                 });
     }
-
+*/
     public void updateDataById(String id, String name, String description, String price, byte[] image){
         db.collection("products")
             .document(id)
