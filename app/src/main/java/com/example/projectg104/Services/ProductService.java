@@ -1,5 +1,6 @@
 package com.example.projectg104.Services;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -8,6 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.example.projectg104.Entities.Product;
 import com.example.projectg104.R;
 
@@ -69,5 +71,12 @@ public class ProductService {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Log.d("ErrorDate", dateFormat.format(date));
         return dateFormat.format(date);
+    }
+
+    public void insertUriToImageView(String url, ImageView imageView, Context context){
+        Glide.with(context)
+                .load(url)
+                .override(500,500)
+                .into(imageView);
     }
 }

@@ -28,8 +28,8 @@
 
         <ImageView
             android:id="@+id/imgFormProduct"
-            android:layout_width="10dp"
-            android:layout_height="10dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             app:srcCompat="@drawable/empty" />
 
         <org.osmdroid.views.MapView

@@ -23,6 +23,10 @@ import com.example.projectg104.DB.DBFirebase;
 import com.example.projectg104.DB.DBHelper;
 import com.example.projectg104.Entities.Product;
 import com.example.projectg104.Services.ProductService;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import org.osmdroid.config.Configuration;
 import org.osmdroid.events.MapEventsReceiver;
@@ -47,6 +51,8 @@ public class ProductForm extends AppCompatActivity {
     private TextView textLatitudFormProduct, textLongitudFormProduct;
     private MapView map;
     private MapController mapController;
+    private StorageReference storageReference;
+    private String urlImage;
     ActivityResultLauncher<String> content;
 
     @Override
@@ -62,6 +68,8 @@ public class ProductForm extends AppCompatActivity {
         imgFormProduct = (ImageView) findViewById(R.id.imgFormProduct);
         textLatitudFormProduct = (TextView) findViewById(R.id.textLatitudFormProduct);
         textLongitudFormProduct = (TextView) findViewById(R.id.textLongitudFormProduct);
+
+        storageReference = FirebaseStorage.getInstance().getReference();
 
         Intent intentIN = getIntent();
         Boolean edit = intentIN.getBooleanExtra("edit", false);
@@ -125,13 +133,23 @@ public class ProductForm extends AppCompatActivity {
                 new ActivityResultCallback<Uri>() {
                     @Override
                     public void onActivityResult(Uri result) {
-                        try {
-                            InputStream inputStream = getContentResolver().openInputStream(result);
-                            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-                            imgFormProduct.setImageBitmap(bitmap);
-                        } catch (FileNotFoundException e) {
-                            e.printStackTrace();
-                        }
+                       Uri uri = result;
+                       StorageReference filePath = storageReference.child("images").child(uri.getLastPathSegment());
+                       filePath.putFile(uri)
+                           .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                               @Override
+                               public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                   Toast.makeText(getApplicationContext(), "Imagen Cargada", Toast.LENGTH_SHORT).show();
+                                   filePath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                       @Override
+                                       public void onSuccess(Uri uri) {
+                                           Uri downloadUrl = uri;
+                                           urlImage = downloadUrl.toString();
+                                           productService.insertUriToImageView(urlImage,imgFormProduct,ProductForm.this);
+                                       }
+                                   });
+                               }
+                           });
                     }
                 }
         );
@@ -152,7 +170,7 @@ public class ProductForm extends AppCompatActivity {
                             editNameFormProduct.getText().toString(),
                             editDescriptionFormProduct.getText().toString(),
                             Integer.parseInt(editPriceFormProduct.getText().toString()),
-                            "",
+                            urlImage,
                             Double.parseDouble(textLatitudFormProduct.getText().toString().trim()),
                             Double.parseDouble(textLongitudFormProduct.getText().toString().trim())
                     );

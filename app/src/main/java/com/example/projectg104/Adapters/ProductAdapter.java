@@ -21,16 +21,19 @@ import com.example.projectg104.MainActivity2;
 import com.example.projectg104.MainActivity3;
 import com.example.projectg104.ProductForm;
 import com.example.projectg104.R;
+import com.example.projectg104.Services.ProductService;
 
 import java.util.ArrayList;
 
 public class ProductAdapter extends BaseAdapter {
     private Context context;
     private ArrayList<Product> arrayProducts;
+    ProductService productService;
 
     public ProductAdapter(Context context, ArrayList<Product> arrayProducts) {
         this.context = context;
         this.arrayProducts = arrayProducts;
+        this.productService = new ProductService();
     }
 
     @Override
@@ -72,6 +75,9 @@ public class ProductAdapter extends BaseAdapter {
         int Usd = product.getPrice();
         String prices = "USD: "+Usd;
         textPriceProduct.setText(prices);
+
+        productService.insertUriToImageView(product.getImage(),imgProduct,context);
+
         imgProduct.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

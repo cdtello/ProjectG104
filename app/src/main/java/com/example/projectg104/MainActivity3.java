@@ -37,22 +37,12 @@ public class MainActivity3 extends AppCompatActivity {
 
         Intent intentIn = getIntent();
 
-        Product product = new Product(
-                intentIn.getStringExtra("id"),
-                intentIn.getStringExtra("name"),
-                intentIn.getStringExtra("description"),
-                Integer.parseInt(intentIn.getStringExtra("price")),
-                intentIn.getStringExtra("image"),
-                Double.parseDouble(intentIn.getStringExtra("latitud")),
-                Double.parseDouble(intentIn.getStringExtra("longitud"))
-        );
-        //ArrayList<Product> list = productService.cursorToArray(dbHelper.getDataById(id));
-        //Product product = list.get(0);
 
-        textProductName.setText(product.getName());
-        textProductDescription.setText(product.getDescription());
-        textProductPrice.setText(String.valueOf(product.getPrice()));
-        //imgProduct.setImageBitmap(productService.byteToBitmap(product.getImage()));
+
+        textProductName.setText(intentIn.getStringExtra("name"));
+        textProductDescription.setText(intentIn.getStringExtra("description"));
+        textProductPrice.setText(String.valueOf(intentIn.getIntExtra("price",0)));
+        productService.insertUriToImageView(intentIn.getStringExtra("image"),imgProduct, MainActivity3.this);
 
         btnProductInfo.setOnClickListener(new View.OnClickListener() {
             @Override
